@@ -1,0 +1,114 @@
+-- DROP PROCEDURE p_stu_info_checkni;
+DELIMITER //
+CREATE PROCEDURE p_stu_info_checkni(inp_stu_roll_no int, OUT v_result varchar(550) )
+BEGIN -- main begin start
+    DECLARE done INT DEFAULT FALSE; -- loop using variale
+    DECLARE v_stu_count INT;
+    DECLARE v_tea_count INT;
+    DECLARE v_hou_count INT;
+    DECLARE v_stu_roll_no INT;
+    DECLARE v_stu_name VARCHAR(50);
+    DECLARE v_stu_class VARCHAR(50);
+    DECLARE v_stu_house_id INT; 
+    DECLARE v_stu_classteacher_id INT;
+    DECLARE v_stu_house_name VARCHAR(50); 
+    DECLARE v_stu_classteacher_name VARCHAR(50);
+    DECLARE v_tea_class VARCHAR(50);
+    DECLARE v_tea_designation VARCHAR(50);  
+    DECLARE v_tea_subject VARCHAR(50); 
+    DECLARE v_tea_house_inc_id  VARCHAR(50);
+    DECLARE v_hou_incharge_tea_id INT; 
+    DECLARE v_hou_name VARCHAR(50);  
+    DECLARE v_hou_dress_color VARCHAR(50); 
+    DECLARE v_hou_day  VARCHAR(50);
+    DECLARE cur_student_ch INT DEFAULT FALSE; 
+    DECLARE cur_teacher_ch INT DEFAULT FALSE;
+    DECLARE cur_house_ch INT DEFAULT FALSE;
+    DECLARE v_temp_result VARCHAR(550); 
+    DECLARE v_temp_loop_result VARCHAR(100);
+    DECLARE m INT;
+
+    SELECT COUNT(*) INTO v_stu_count FROM student WHERE stu_roll_no = inp_stu_roll_no; -- count of student
+    IF v_stu_count >= 1 THEN 
+        SET v_result = 'Data is present'; 
+    ELSE 
+        SET v_result = 'No Student found having roll number'; 
+    END IF;
+
+    SET v_temp_result = ''; 
+    SET m = 1;
+
+    -- Student level processing
+    BEGIN
+        DECLARE cur_student CURSOR FOR
+        SELECT stu_roll_no, stu_name, stu_class, stu_house_id, stu_classteacher_id 
+        FROM student
+        WHERE stu_roll_no = inp_stu_roll_no;
+
+        DECLARE CONTINUE HANDLER FOR NOT FOUND SET cur_student_ch = TRUE;
+
+        OPEN cur_student;
+        read_loop_1: LOOP -- 1st loop starts
+            FETCH cur_student INTO v_stu_roll_no, v_stu_name, v_stu_class, v_stu_house_id, v_stu_classteacher_id;
+            IF cur_student_ch THEN 
+                LEAVE read_loop_1; 
+            END IF;
+
+            -- Teacher level processing
+            BEGIN
+                DECLARE cur_teacher CURSOR FOR
+                SELECT tea_class, tea_designation, tea_subject, tea_house_inc_id
+                FROM teacher
+                WHERE tea_id = v_stu_classteacher_id AND tea_class = v_stu_class;
+
+                DECLARE CONTINUE HANDLER FOR NOT FOUND SET cur_teacher_ch = TRUE;
+
+                OPEN cur_teacher;
+                read_loop_2: LOOP -- 2nd loop starts
+                    FETCH cur_teacher INTO v_tea_class, v_tea_designation, v_tea_subject, v_tea_house_inc_id;
+                    IF cur_teacher_ch THEN 
+                        LEAVE read_loop_2; 
+                    END IF;
+
+                    -- House level processing
+                    BEGIN
+                        DECLARE cur_house CURSOR FOR
+                        SELECT hou_name, hou_dress_color, hou_day, hou_incharge_tea_id
+                        FROM house 
+                        WHERE hou_incharge_tea_id = v_tea_house_inc_id;
+
+                        DECLARE CONTINUE HANDLER FOR NOT FOUND SET cur_house_ch = TRUE;
+
+                        OPEN cur_house;
+                        read_loop_3: LOOP -- 3rd loop starts
+                            FETCH cur_house INTO v_hou_name, v_hou_dress_color, v_hou_day, v_hou_incharge_tea_id;
+                            IF cur_house_ch THEN 
+                                LEAVE read_loop_3; 
+                            END IF;
+
+                            SET m = m + 1; -- just for reference that how many times loop is running.
+                            SELECT m;
+
+                            -- Collect results from house loop
+                            SET v_temp_loop_result = CONCAT(v_stu_roll_no, '<>', v_stu_name, '<>', v_stu_class, '<>', v_tea_designation, '<>', v_tea_subject, '<>', v_tea_house_inc_id, '<>', v_hou_name, '<>', v_hou_dress_color, '<><><>');
+                            SET v_temp_result = CONCAT(v_temp_result, v_temp_loop_result);
+                        END LOOP; -- 3rd loop ends
+                        CLOSE cur_house;
+
+                        SET cur_house_ch = FALSE; -- Reset the flag for the next iteration of house loop
+                    END;
+                END LOOP; -- 2nd loop ends
+                CLOSE cur_teacher;
+
+                SET cur_teacher_ch = FALSE; -- Reset the flag for the next iteration of teacher loop
+            END;
+        END LOOP; -- 1st loop ends
+        CLOSE cur_student;
+
+        SET cur_student_ch = FALSE; -- Reset the flag for the next iteration of student loop
+    END;
+
+    SET v_result := v_temp_result; -- Final result to be returned
+    select v_result;
+END //
+DELIMITER ;

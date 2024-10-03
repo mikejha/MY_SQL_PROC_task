@@ -1,0 +1,9 @@
+-- -Insert Into script- --
+INSERT INTO student values(1,'Aman','1A','11','6');
+
+INSERT INTO teacher values(6,'1A','High','English','5');
+INSERT INTO teacher values(6,'1A','High','Hindi','5');
+
+INSERT INTO house values (1,'Ganga','Green','Monday',5);
+INSERT INTO house values (1,'Yamuna','Blue','Tuesday',5);
+INSERT INTO house values (1,'Kaveri','Pink','Wednesday',5); 

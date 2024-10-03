@@ -1,0 +1,24 @@
+-- -Create table script- --
+CREATE TABLE teacher (
+    tea_id INT, -- PRIMARY KEY,
+    tea_class VARCHAR(20),
+    tea_designation VARCHAR(50),
+    tea_subject VARCHAR(50),
+    tea_house_inc_id int
+); 
+CREATE TABLE house (
+    hou_id INT,-- PRIMARY KEY,
+    hou_name VARCHAR(50),
+    hou_dress_color VARCHAR(20),
+    hou_day VARCHAR(20),
+    hou_incharge_tea_id INT
+);
+CREATE TABLE student (
+    stu_roll_no INT, --  PRIMARY KEY,
+    stu_name VARCHAR(100),
+    stu_class VARCHAR(20),
+    stu_house_id INT,
+    stu_classteacher_id INT -- ,
+    -- FOREIGN KEY (stu_house_id) REFERENCES house(hou_id),
+    -- FOREIGN KEY (stu_classteacher_id) REFERENCES teacher(tea_id)
+);

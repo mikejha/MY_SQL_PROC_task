@@ -1,0 +1,28 @@
+Create a proc which will give us the below data in below format:
+
+stu_roll_no<>stu_name<>stu_class<>tea_designation<>tea_subject<>tea_house_inc_id<>hou_name<>hou_dress_color<><><>
+
+stu_roll_no,stu_name,stu_class              : columns are present in student table.
+tea_designation,tea_subject,tea_house_inc_id: columns are present in teacher table.
+hou_name<>hou_dress_color                   : columns are present in house table.
+
+Note:
+Don't use a single query joining all the 3 tables and providing the above desired output, use the seperate cursor for each table and join them using inner nested loops in MYSQL.
+
+If you are done, then you will be getting the below desired output:
+
+'1<>Aman<>1A<>High<>English<>5<>Ganga<>Green<><><>1<>Aman<>1A<>High<>English<>5<>Yamuna<>Blue<><><>1<>Aman<>1A<>High<>English<>5<>Kaveri<>Pink<><><>1<>Aman<>1A<>High<>Hindi<>5<>Ganga<>Green<><><>1<>Aman<>1A<>High<>Hindi<>5<>Yamuna<>Blue<><><>1<>Aman<>1A<>High<>Hindi<>5<>Kaveri<>Pink<><><>'
+
+Breaking down the output:
+1<>Aman<>1A<>High<>English<>5<>Ganga<>Green<><><>
+1<>Aman<>1A<>High<>English<>5<>Yamuna<>Blue<><><>
+1<>Aman<>1A<>High<>English<>5<>Kaveri<>Pink<><><>
+1<>Aman<>1A<>High<>Hindi<>5<>Ganga<>Green<><><>
+1<>Aman<>1A<>High<>Hindi<>5<>Yamuna<>Blue<><><>
+1<>Aman<>1A<>High<>Hindi<>5<>Kaveri<>Pink<><><>
+
+For the set of data present in the 3 tables, you will get the output as above.
+
+Check the solution if you want(step_4_Procedure).
+
+Happy coding.
